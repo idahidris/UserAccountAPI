@@ -15,13 +15,13 @@ public class GenericResponseDto {
     private Set<String> errors;
     private Object data;
 
-    public GenericResponseDto(Date responseTime, String respCode, String error) {
+    public GenericResponseDto(String respCode, String error) {
         this.responseCode = respCode;
         this.errors = new HashSet<>(Arrays.asList(error));
 
     }
 
-    public GenericResponseDto(Date responseTime, String respCode, List<String> error) {
+    public GenericResponseDto(String respCode, List<String> error) {
         this.responseCode = respCode;
         this.errors = new HashSet<>(error);
     }
