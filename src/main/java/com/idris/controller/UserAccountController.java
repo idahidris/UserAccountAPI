@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 
 @Slf4j
@@ -99,7 +100,7 @@ public class UserAccountController {
 
 
             GenericResponseDto genericResponseDto = userAccountServices.create(userAccountDto);
-            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
+            if(Objects.nonNull(genericResponseDto))genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
             return ResponseEntity.ok(genericResponseDto);
         }
         catch (AppException ex){
@@ -118,7 +119,7 @@ public class UserAccountController {
         try{
 
             GenericResponseDto genericResponseDto = userAccountServices.update(userAccountDto, id);
-            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
+            if(Objects.nonNull(genericResponseDto))genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
             return ResponseEntity.ok(genericResponseDto);
         }
         catch (AppException ex){

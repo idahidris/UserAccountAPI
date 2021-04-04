@@ -5,6 +5,7 @@ import com.idris.dto.UserAccountDto;
 import com.idris.entity.UserAccount;
 import com.idris.entity.UserRole;
 import com.idris.entity.UserStatus;
+import com.idris.error.AppException;
 import com.idris.repos.UserAccountRepository;
 import com.idris.repos.UserRoleRepository;
 import com.idris.repos.UserStatusRepository;
@@ -33,61 +34,88 @@ public class UserAccountServices {
 
 
     public List<UserAccount> findAll(int page, int pageSize){
-        Pageable pageable = PageRequest.of(page, pageSize);
-        return userAccountRepository.findAll(pageable).toList();
+        try {
+            Pageable pageable = PageRequest.of(page, pageSize);
+            return userAccountRepository.findAll(pageable).toList();
+        }
+        catch (Exception ex){
+            throw new AppException(ex.getCause().getMessage());
+        }
 
 
     }
 
     public UserAccount findById(long id){
-        return userAccountRepository.findById(id).orElse(null);
+        try {
+            return userAccountRepository.findById(id).orElse(null);
+        }
+        catch (Exception ex){
+            throw new AppException(ex.getCause().getMessage());
+        }
 
     }
 
     public UserAccount delById(long id){
-        UserAccount userAccount = userAccountRepository.findById(id).orElse(null);
-        if(Objects.nonNull(userAccount)){
-            userAccount.setDeactivatedDate(new Date());
-            UserStatus userStatus = userStatusRepository.findByName("DEACTIVATED").orElse(null);
-            userAccount.setStatus(userStatus);
-            return userAccountRepository.save(userAccount);
-        }
+        try {
+            UserAccount userAccount = userAccountRepository.findById(id).orElse(null);
+            if (Objects.nonNull(userAccount)) {
+                userAccount.setDeactivatedDate(new Date());
+                UserStatus userStatus = userStatusRepository.findByName("DEACTIVATED").orElse(null);
+                userAccount.setStatus(userStatus);
+                return userAccountRepository.save(userAccount);
+            }
 
-        return new UserAccount();
+            return new UserAccount();
+        }
+        catch (Exception ex){
+            throw  new AppException(ex.getCause().getMessage());
+        }
     }
 
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public GenericResponseDto  create(UserAccountDto userAccountdto){
 
-        UserAccount userAccount = toUserAccount(userAccountdto);
-        UserAccount existUser = userAccountRepository.getByEmail(userAccount.getEmail()).orElse(null);
+        try {
 
-        if(Objects.nonNull(existUser)) {
-            if (userAccount.equals(existUser)) {
+            UserAccount userAccount = toUserAccount(userAccountdto);
+            UserAccount existUser = userAccountRepository.getByEmail(userAccount.getEmail()).orElse(null);
 
-                return new GenericResponseDto(existUser);
-            } else {
+            if (Objects.nonNull(existUser)) {
+                if (userAccount.equals(existUser)) {
 
-                Set<String> error = new HashSet<>();
-                error.add("Already registered");
-                return new GenericResponseDto(error);
+                    return new GenericResponseDto(existUser);
+                } else {
+
+                    Set<String> error = new HashSet<>();
+                    error.add("Already registered");
+                    return new GenericResponseDto(error);
+                }
             }
+            UserAccount result = userAccountRepository.save(userAccount);
+            return new GenericResponseDto(result);
         }
-        UserAccount result = userAccountRepository.saveAndFlush(userAccount);
-        return new  GenericResponseDto(userAccountRepository.getByEmail(result.getEmail()));
+        catch (Exception ex){
+
+            throw new AppException(ex.getCause().getMessage());
+        }
 
     }
 
 
     public GenericResponseDto update(UserAccountDto userAccount, Long id){
-           UserAccount userDb = toUserAccount(userAccount, id);
-           if(Objects.isNull(userDb)){
-               Set<String> error = new HashSet<>();
-               error.add("This user does not exists:"+id);
-               return new GenericResponseDto(error);
-           }
-           return new GenericResponseDto(userAccountRepository.save(userDb));
+        try {
+            UserAccount userDb = toUserAccount(userAccount, id);
+            if (Objects.isNull(userDb)) {
+                Set<String> error = new HashSet<>();
+                error.add("This user does not exists:" + id);
+                return new GenericResponseDto(error);
+            }
+            return new GenericResponseDto(userAccountRepository.save(userDb));
+        }
+        catch (Exception ex){
+            throw new AppException(ex.getCause().getMessage());
+        }
 
     }
 
