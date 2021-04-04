@@ -1,5 +1,7 @@
 package com.idris.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.idris.util.JsonDateSerializer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,9 +34,12 @@ public class UserAccount implements Serializable {
     @ManyToOne
     @JoinColumn(name ="role")
     private UserRole role;
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date registered;
     private boolean verified;
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date verifiedDate;
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date deactivatedDate;
     @ManyToOne
     @JoinColumn(name ="status")
