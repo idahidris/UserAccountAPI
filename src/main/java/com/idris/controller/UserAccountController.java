@@ -1,7 +1,5 @@
 package com.idris.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.idris.dto.GenericResponseDto;
 import com.idris.dto.UserAccountDto;
 import com.idris.error.AppException;
@@ -12,7 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 import javax.validation.Valid;
 
@@ -25,7 +32,7 @@ public class UserAccountController {
 
     @Autowired
     private UserAccountServices userAccountServices;
-    private Gson gson= new GsonBuilder().setDateFormat(Constants.DATE_PATTERN).create();
+
 
     @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponseDto> findAll(@RequestParam("size") int size, @RequestParam("page") int page) {
@@ -91,7 +98,7 @@ public class UserAccountController {
         try{
 
 
-            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.create(userAccountDto));
+            GenericResponseDto genericResponseDto = userAccountServices.create(userAccountDto);
             genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
             return ResponseEntity.ok(genericResponseDto);
         }
@@ -110,7 +117,7 @@ public class UserAccountController {
 
         try{
 
-            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.update(userAccountDto, id));
+            GenericResponseDto genericResponseDto = userAccountServices.update(userAccountDto, id);
             genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
             return ResponseEntity.ok(genericResponseDto);
         }

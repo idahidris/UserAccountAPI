@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name="user_account")
@@ -45,4 +46,27 @@ public class UserAccount implements Serializable {
     @JoinColumn(name ="status")
     private UserStatus status;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserAccount)) return false;
+        UserAccount that = (UserAccount) o;
+        return verified == that.verified &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(firstname, that.firstname) &&
+                Objects.equals(lastname, that.lastname) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(mobile, that.mobile) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(role, that.role) &&
+                Objects.equals(registered, that.registered) &&
+                Objects.equals(verifiedDate, that.verifiedDate) &&
+                Objects.equals(deactivatedDate, that.deactivatedDate) &&
+                Objects.equals(status, that.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, firstname, lastname, email, mobile, password, role, registered, verified, verifiedDate, deactivatedDate, status);
+    }
 }
