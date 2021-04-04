@@ -1,20 +1,22 @@
 package com.idris.services;
 
+import com.idris.dto.GenericResponseDto;
 import com.idris.dto.UserAccountDto;
 import com.idris.entity.UserAccount;
 import com.idris.entity.UserRole;
 import com.idris.entity.UserStatus;
 import com.idris.repos.UserAccountRepository;
+import com.idris.repos.UserRoleRepository;
 import com.idris.repos.UserStatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -25,6 +27,10 @@ public class UserAccountServices {
 
     @Autowired
     private UserStatusRepository userStatusRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
 
     public List<UserAccount> findAll(int page, int pageSize){
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -51,17 +57,37 @@ public class UserAccountServices {
     }
 
 
-    public UserAccount create(UserAccountDto userAccountdto){
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public GenericResponseDto  create(UserAccountDto userAccountdto){
 
         UserAccount userAccount = toUserAccount(userAccountdto);
         UserAccount existUser = userAccountRepository.getByEmail(userAccount.getEmail()).orElse(null);
-       return (Objects.isNull(existUser))? userAccountRepository.save(userAccount): existUser;
+
+        if(Objects.nonNull(existUser)) {
+            if (userAccount.equals(existUser)) {
+
+                return new GenericResponseDto(existUser);
+            } else {
+
+                Set<String> error = new HashSet<>();
+                error.add("Already registered");
+                return new GenericResponseDto(error);
+            }
+        }
+        UserAccount result = userAccountRepository.saveAndFlush(userAccount);
+        return new  GenericResponseDto(userAccountRepository.getByEmail(result.getEmail()));
+
     }
 
 
-    public UserAccount update(UserAccountDto userAccount, Long id){
+    public GenericResponseDto update(UserAccountDto userAccount, Long id){
            UserAccount userDb = toUserAccount(userAccount, id);
-           return Objects.isNull(userDb)? new UserAccount(): userAccountRepository.save(userDb);
+           if(Objects.isNull(userDb)){
+               Set<String> error = new HashSet<>();
+               error.add("This user does not exists:"+id);
+               return new GenericResponseDto(error);
+           }
+           return new GenericResponseDto(userAccountRepository.save(userDb));
 
     }
 
@@ -96,11 +122,7 @@ public class UserAccountServices {
             }
 
             if (userAccountDto.getRole() != 0) {
-                UserRole userRole = new UserRole();
-                if(Objects.nonNull(userAccount.getRole())){
-                    userRole = userAccount.getRole();
-                }
-                userRole.setId(userAccountDto.getRole());
+                UserRole userRole = userRoleRepository.findById(userAccountDto.getRole()).orElse(new UserRole());
                 userAccount.setRole(userRole);
             }
             if (Objects.nonNull(userAccountDto.getTitle())) {
@@ -108,11 +130,7 @@ public class UserAccountServices {
             }
 
             if (userAccountDto.getStatus() != 0) {
-                UserStatus userStatus = new UserStatus();
-                if(Objects.nonNull(userAccount.getStatus())){
-                    userStatus = userAccount.getStatus();
-                }
-                userStatus.setId(userAccountDto.getStatus());
+                UserStatus userStatus = userStatusRepository.findById(userAccountDto.getStatus()).orElse(new UserStatus());
                 userAccount.setStatus(userStatus);
             }
 
@@ -130,6 +148,10 @@ public class UserAccountServices {
 
             if (Objects.nonNull(userAccountDto.getLastname())) {
                 userAccount.setLastname(userAccountDto.getLastname());
+            }
+
+            if (Objects.nonNull(userAccountDto.getEmail())) {
+                userAccount.setEmail(userAccountDto.getEmail());
             }
 
         }

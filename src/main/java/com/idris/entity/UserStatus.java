@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import java.util.Objects;
 
 @Entity
 @Table(name="user_status")
@@ -22,4 +23,16 @@ public class UserStatus {
     @Column(name = "name")
     private String name;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserStatus)) return false;
+        UserStatus that = (UserStatus) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
