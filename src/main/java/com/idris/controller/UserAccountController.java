@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,6 +28,45 @@ public class UserAccountController {
            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.findAll(page, size));
            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
            return ResponseEntity.ok(genericResponseDto);
+        }
+        catch (AppException ex){
+            GenericResponseDto genericResponseDto = new GenericResponseDto(getCause(ex).getMessage());
+            genericResponseDto.setResponseCode(Constants.FAILED);
+            return ResponseEntity.badRequest().body(genericResponseDto);
+        }
+
+    }
+
+
+
+    @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponseDto> findById(@PathVariable("id") int id) {
+
+        try{
+
+            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.findById(id));
+            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
+            return ResponseEntity.ok(genericResponseDto);
+        }
+        catch (AppException ex){
+            GenericResponseDto genericResponseDto = new GenericResponseDto(getCause(ex).getMessage());
+            genericResponseDto.setResponseCode(Constants.FAILED);
+            return ResponseEntity.badRequest().body(genericResponseDto);
+        }
+
+    }
+
+
+
+    @DeleteMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponseDto> delById(@PathVariable("id") int id) {
+
+        try{
+
+
+            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.delById(id));
+            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
+            return ResponseEntity.ok(genericResponseDto);
         }
         catch (AppException ex){
             GenericResponseDto genericResponseDto = new GenericResponseDto(getCause(ex).getMessage());
