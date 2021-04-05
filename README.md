@@ -238,24 +238,7 @@ The REST API to the example app is described below.
     }
 
 #
-## Attempt to change a Thing using partial params
 
-### Request
-
-`PUT /user/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'status=changed3' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed3"}
 
 ## Attempt to change a Thing using invalid params
 
@@ -381,7 +364,7 @@ The REST API to the example app is described below.
 
 ### Request
 
-`DELETE /thing/id`
+`DELETE /user/id`
 
     curl --location --request DELETE 'http://0.0.0.0:8080/api/v1/user/27'
 
