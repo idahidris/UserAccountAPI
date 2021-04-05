@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "1113954f-5f3d-48c8-a2c4-72477a0cde7d",
+		"name": "UserAccountAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "delete user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/user/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"title\": \"Mrs\",\n        \"firstname\": \"Ubong\",\n        \"lastname\": \"Idah\",\n        \"email\": \"idris4real@gmail.com\",\n        \"mobile\": \"08030816765\",\n        \"password\": \"password2$\",\n        \"role\": {\n            \"id\": 1,\n            \"name\": \"ADMIN\"\n        },\n        \"registered\": \"2021-04-03T22:51:24.000+0000\",\n        \"verified\": true,\n        \"verifiedDate\": \"2021-04-14T22:50:16.000+0000\",\n        \"deactivatedDate\": \"2021-04-03T23:59:43.000+0000\",\n        \"status\": {\n            \"id\": 3,\n            \"name\": \"DEACTIVATED\"\n        }\n   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"title\": \"Mrs\",\n        \"firstname\": \"Ubong\",\n        \"lastname\": \"Idah\",\n        \"email\": \"idris4real@gmail.com\",\n        \"mobile\": \"08030816765\",\n        \"password\": \"password2$\",\n        \"role\": {\n            \"id\": 1,\n            \"name\": \"ADMIN\"\n        },\n        \"registered\": \"2021-04-03T22:51:24.000+0000\",\n        \"verified\": true,\n        \"verifiedDate\": \"2021-04-14T22:50:16.000+0000\",\n        \"deactivatedDate\": \"2021-04-03T23:59:43.000+0000\",\n        \"status\": {\n            \"id\": 3,\n            \"name\": \"DEACTIVATED\"\n        }\n   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/users?size=100&page=0",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "100"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/verify?code=c7bc97c0-f770-45ce-9565-dda7bd33ab77",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"verify"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "c7bc97c0-f770-45ce-9565-dda7bd33ab77"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
