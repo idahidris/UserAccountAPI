@@ -53,6 +53,22 @@ public class UserAccountController {
     }
 
 
+    @PostMapping(path = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponseDto> verify(@RequestParam("code") String code) {
+
+        try{
+
+            GenericResponseDto genericResponseDto = new GenericResponseDto(userAccountServices.verify(code));
+            genericResponseDto.setResponseCode(Constants.SUCCESSFUL);
+            return ResponseEntity.ok(genericResponseDto);
+        }
+        catch (AppException ex){
+            GenericResponseDto genericResponseDto = new GenericResponseDto(getCause(ex).getMessage());
+            genericResponseDto.setResponseCode(Constants.FAILED);
+            return ResponseEntity.badRequest().body(genericResponseDto);
+        }
+
+    }
 
     @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponseDto> findById(@PathVariable("id") int id) {

@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
     Optional<UserAccount> getByEmail(String email);
+    Optional<UserAccount> findByVerificationCode(String code);
 }

@@ -11,12 +11,19 @@ import com.idris.repos.UserRoleRepository;
 import com.idris.repos.UserStatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Slf4j
@@ -31,6 +38,15 @@ public class UserAccountServices {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+     HttpServletRequest httpServletRequest;
+
+    @Value("${spring.mail.username}")
+    private String fromAddress;
 
 
     public List<UserAccount> findAll(int page, int pageSize){
@@ -73,6 +89,24 @@ public class UserAccountServices {
     }
 
 
+    public UserAccount verify(String code){
+        try {
+            UserAccount userAccount = userAccountRepository.findByVerificationCode(code).orElse(null);
+            if (Objects.nonNull(userAccount)) {
+                userAccount.setVerifiedDate(new Date());
+                userAccount.setVerified(true);
+                UserStatus userStatus = userStatusRepository.findByName("VERIFIED").orElse(null);
+                userAccount.setStatus(userStatus);
+                return userAccountRepository.save(userAccount);
+            }
+
+            return new UserAccount();
+        }
+        catch (Exception ex){
+            throw  new AppException(ex.getCause().getMessage());
+        }
+    }
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public GenericResponseDto  create(UserAccountDto userAccountdto){
 
@@ -92,7 +126,13 @@ public class UserAccountServices {
                     return new GenericResponseDto(error);
                 }
             }
+            userAccount.setStatus(userStatusRepository.findByName("REGISTERED").orElse(null));
+            userAccount.setVerified(false);
+            userAccount.setVerificationCode(UUID.randomUUID().toString());
             UserAccount result = userAccountRepository.save(userAccount);
+
+            String baseUrl = getBaseUrl(httpServletRequest);
+            sendVerificationByEmail(userAccount, baseUrl);
             return new GenericResponseDto(result);
         }
         catch (Exception ex){
@@ -182,9 +222,45 @@ public class UserAccountServices {
                 userAccount.setEmail(userAccountDto.getEmail());
             }
 
+
+
         }
 
         return userAccount;
+
+    }
+
+    private void sendVerificationByEmail(UserAccount user, String siteURL)
+            throws MessagingException, UnsupportedEncodingException {
+        String toAddress = user.getEmail();
+        String senderName = "UserAccountAPI";
+        String subject = "Please verify your registration";
+        String content = "Dear [[name]],<br>"
+                + "Please click the link below to activate your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">ACTIVATE</a></h3>"
+                + "Thank you,<br>"
+                + "UserAccountAPI.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+
+        content = content.replace("[[name]]", user.getFirstname());
+        String verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
+
+        content = content.replace("[[URL]]", verifyURL);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+
+    }
+
+    String getBaseUrl(HttpServletRequest request) {
+        return request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length()) + request.getContextPath();
 
     }
 }
