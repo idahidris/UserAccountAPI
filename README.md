@@ -335,6 +335,48 @@ The REST API to the example app is described below.
    }
 
 
+## verify
+
+### Request
+
+`POST /verify/code`
+
+    curl --location --request POST 'http://0.0.0.0:8080/api/v1/verify?code=c7bc97c0-f770-45ce-9565-dda7bd33ab77'
+
+### Response
+
+    HTTP/1.1 200 OK
+  
+
+    
+        {
+            "responseCode": "00",
+            "errors": null,
+            "data": {
+                "id": 27,
+                "title": "Mrs",
+                "firstname": "Ubong2",
+                "lastname": "Idah1",
+                "email": "idris4real@gmail.com",
+                "mobile": "08030816765",
+                "password": "password2$",
+                "role": {
+                    "id": 1,
+                    "name": "ADMIN"
+                },
+                "registered": "2021-04-03 11:51:24",
+                "verified": true,
+                "verifiedDate": "2021-04-05 09:53:33",
+                "deactivatedDate": "2021-04-05 09:53:06",
+                "status": {
+                    "id": 2,
+                    "name": "VERIFIED"
+                },
+                "verificationCode": "c7bc97c0-f770-45ce-9565-dda7bd33ab77"
+            }
+        }
+    
+
 ## Try to delete same Thing again
 
 ### Request
@@ -374,4 +416,3 @@ The REST API to the example app is described below.
             "verificationCode": "c7bc97c0-f770-45ce-9565-dda7bd33ab77"
         }
     }
-
