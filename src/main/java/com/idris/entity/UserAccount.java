@@ -46,23 +46,23 @@ public class UserAccount implements Serializable {
     @JoinColumn(name ="status")
     private UserStatus status;
 
+    private String verificationCode;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserAccount)) return false;
         UserAccount that = (UserAccount) o;
-        return verified == that.verified &&
+        return
                 Objects.equals(title, that.title) &&
                 Objects.equals(firstname, that.firstname) &&
                 Objects.equals(lastname, that.lastname) &&
                 Objects.equals(email, that.email) &&
                 Objects.equals(mobile, that.mobile) &&
                 Objects.equals(password, that.password) &&
-                Objects.equals(role, that.role) &&
-                Objects.equals(registered, that.registered) &&
-                Objects.equals(verifiedDate, that.verifiedDate) &&
-                Objects.equals(deactivatedDate, that.deactivatedDate) &&
-                Objects.equals(status, that.status);
+                Objects.equals(role, that.role);
+
+
     }
 
     @Override

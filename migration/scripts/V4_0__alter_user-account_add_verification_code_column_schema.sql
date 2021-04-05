@@ -1,0 +1,1 @@
+ALTER TABLE user_account ADD column verification_code varchar(64);
