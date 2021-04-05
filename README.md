@@ -67,7 +67,7 @@ The REST API to the example app is described below.
         ]
     }
 
-## Create a new UserAccount
+## Create a new user
 
 ### Request
 
@@ -161,7 +161,7 @@ The REST API to the example app is described below.
         }
     }
 
-## Get a non-existent Thing
+## Get a non-existent user
 
 ### Request
 
@@ -181,7 +181,7 @@ The REST API to the example app is described below.
 
 
 
-## Change a Thing's state
+## Change a user's state
 
 ### Request
 
@@ -240,7 +240,7 @@ The REST API to the example app is described below.
 #
 
 
-## Attempt to change a Thing using invalid params
+## Attempt to change a user using invalid params
 
 ### Request
 
@@ -279,43 +279,7 @@ The REST API to the example app is described below.
 
 
 
-## Delete a Thing
 
-### Request
-
-`DELETE /user/id`
-
-    curl --location --request DELETE 'http://0.0.0.0:8080/api/v1/user/27'
-
-### Response
-
-    HTTP/1.1 200 OK
-   {
-       "responseCode": "00",
-       "errors": null,
-       "data": {
-           "id": 27,
-           "title": "Mrs",
-           "firstname": "Ubong2",
-           "lastname": "Idah1",
-           "email": "idris4real@gmail.com",
-           "mobile": "08030816765",
-           "password": "password2$",
-           "role": {
-               "id": 1,
-               "name": "ADMIN"
-           },
-           "registered": "2021-04-03 11:51:24",
-           "verified": true,
-           "verifiedDate": "2021-04-05 09:51:41",
-           "deactivatedDate": "2021-04-05 09:53:06",
-           "status": {
-               "id": 3,
-               "name": "DEACTIVATED"
-           },
-           "verificationCode": "c7bc97c0-f770-45ce-9565-dda7bd33ab77"
-       }
-   }
 
 
 ## verify
@@ -360,7 +324,7 @@ The REST API to the example app is described below.
         }
     
 
-## Try to delete same Thing again
+## Try to delete a user
 
 ### Request
 
