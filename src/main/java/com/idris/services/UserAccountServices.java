@@ -169,67 +169,71 @@ public class UserAccountServices {
 
 
     public UserAccount toUserAccount(UserAccountDto userAccountDto, long id){
+        try {
 
-        UserAccount userAccount = new UserAccount();
+            UserAccount userAccount = new UserAccount();
 
-        if(id !=0){
-            userAccount = userAccountRepository.findById(id).orElse(null);
+            if (id != 0) {
+                userAccount = userAccountRepository.findById(id).orElse(null);
+            }
+
+            if (Objects.nonNull(userAccount)) {
+                if (Objects.nonNull(userAccountDto.getMobile())) {
+                    userAccount.setMobile(userAccountDto.getMobile());
+                }
+                if (Objects.nonNull(userAccountDto.getPassword())) {
+                    userAccount.setPassword(userAccountDto.getPassword());
+                }
+
+                if (Objects.nonNull(userAccountDto.getDeactivatedDate())) {
+                    userAccount.setDeactivatedDate(userAccountDto.getDeactivatedDate());
+                }
+
+                if (Objects.nonNull(userAccountDto.getRegistered())) {
+                    userAccount.setRegistered(userAccountDto.getRegistered());
+                }
+
+                if (userAccountDto.getRole() != 0) {
+                    UserRole userRole = userRoleRepository.findById(userAccountDto.getRole()).orElse(new UserRole());
+                    userAccount.setRole(userRole);
+                }
+                if (Objects.nonNull(userAccountDto.getTitle())) {
+                    userAccount.setTitle(userAccountDto.getTitle());
+                }
+
+                if (userAccountDto.getStatus() != 0) {
+                    UserStatus userStatus = userStatusRepository.findById(userAccountDto.getStatus()).orElse(new UserStatus());
+                    userAccount.setStatus(userStatus);
+                }
+
+
+                if (Objects.nonNull(userAccountDto.getVerifiedDate())) {
+                    userAccount.setVerifiedDate(userAccountDto.getVerifiedDate());
+                }
+
+                if (Objects.nonNull(userAccountDto.getVerified())) {
+                    userAccount.setVerified(userAccountDto.getVerified().equals("1"));
+                }
+                if (Objects.nonNull(userAccountDto.getFirstname())) {
+                    userAccount.setFirstname(userAccountDto.getFirstname());
+                }
+
+                if (Objects.nonNull(userAccountDto.getLastname())) {
+                    userAccount.setLastname(userAccountDto.getLastname());
+                }
+
+                if (Objects.nonNull(userAccountDto.getEmail())) {
+                    userAccount.setEmail(userAccountDto.getEmail());
+                }
+
+
+            }
+
+            return userAccount;
         }
-
-        if(Objects.nonNull(userAccount)) {
-            if (Objects.nonNull(userAccountDto.getMobile())) {
-                userAccount.setMobile(userAccountDto.getMobile());
-            }
-            if (Objects.nonNull(userAccountDto.getPassword())) {
-                userAccount.setPassword(userAccountDto.getPassword());
-            }
-
-            if (Objects.nonNull(userAccountDto.getDeactivatedDate())) {
-                userAccount.setDeactivatedDate(userAccountDto.getDeactivatedDate());
-            }
-
-            if (Objects.nonNull(userAccountDto.getRegistered())) {
-                userAccount.setRegistered(userAccountDto.getRegistered());
-            }
-
-            if (userAccountDto.getRole() != 0) {
-                UserRole userRole = userRoleRepository.findById(userAccountDto.getRole()).orElse(new UserRole());
-                userAccount.setRole(userRole);
-            }
-            if (Objects.nonNull(userAccountDto.getTitle())) {
-                userAccount.setTitle(userAccountDto.getTitle());
-            }
-
-            if (userAccountDto.getStatus() != 0) {
-                UserStatus userStatus = userStatusRepository.findById(userAccountDto.getStatus()).orElse(new UserStatus());
-                userAccount.setStatus(userStatus);
-            }
-
-
-            if (Objects.nonNull(userAccountDto.getVerifiedDate())) {
-                userAccount.setVerifiedDate(userAccountDto.getVerifiedDate());
-            }
-
-            if (Objects.nonNull(userAccountDto.getVerified())) {
-                userAccount.setVerified(userAccountDto.getVerified().equals("1"));
-            }
-            if (Objects.nonNull(userAccountDto.getFirstname())) {
-                userAccount.setFirstname(userAccountDto.getFirstname());
-            }
-
-            if (Objects.nonNull(userAccountDto.getLastname())) {
-                userAccount.setLastname(userAccountDto.getLastname());
-            }
-
-            if (Objects.nonNull(userAccountDto.getEmail())) {
-                userAccount.setEmail(userAccountDto.getEmail());
-            }
-
-
-
+        catch (Exception ex){
+            throw new AppException(ex.getCause().getMessage());
         }
-
-        return userAccount;
 
     }
 
